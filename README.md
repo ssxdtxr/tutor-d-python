@@ -1,4 +1,18 @@
-Описание:
-установка (uv sync);
-запуск (uv run uvicorn app.main:app --reload); 
-адрес Swagger http://127.0.0.1:8000/docs
+# Дневник репетитора API
+
+Учебный бэкенд на FastAPI для частного репетитора: ученики,
+расписание уроков, домашние задания и оплаты.
+
+## Установка
+
+```bash
+uv sync
+```
+
+## Запуск
+
+```bash
+uv run uvicorn app.main:app --reload
+```
+
+Swagger: http://127.0.0.1:8000/docs
