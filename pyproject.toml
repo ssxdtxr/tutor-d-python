@@ -1,0 +1,49 @@
+[project]
+name = "tutors-d"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.142.2",
+    "uvicorn>=0.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.16.10",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+exclude = [
+    ".venv",
+    "__pycache__",
+    "alembic/versions",
+]
+
+
+[tool.ruff.lint]
+# Наборы правил
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes (неиспользуемые импорты, переменные)
+    "I",   # isort (порядок импортов)
+    "UP",  # pyupgrade (f-strings, новый синтаксис)
+    "B",   # flake8-bugbear (распространённые баги)
+    "S",   # bandit (безопасность)
+    "N",   # pep8-naming (соглашения об именовании)
+]
+ignore = [
+    "S101",  # разрешить assert в тестах
+    "B008",  # разрешить вызовы функций в аргументах по умолчанию (нужно для Depends())
+]
+
+# Правила только для тестов
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "S105"]  # assert и hardcoded passwords в тестах — ок
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]   # твой пакет — сортировать как first-party
