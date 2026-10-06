@@ -14,7 +14,7 @@ class StudentBase(BaseModel):
     age: int = Field(ge=6, le=18)
     grade: int = Field(ge=1, le=11)
     level: StudentLevelEnum = StudentLevelEnum.beginner
-    parent_contact: str | None = Field(max_length=100)
+    parent_contact: str | None = Field(default=None, max_length=100)
 
 
 class StudentSchema(StudentBase):
