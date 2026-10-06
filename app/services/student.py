@@ -9,6 +9,7 @@ students: list[StudentSchema] = list()
 
 _id_counter = count(1)
 
+
 class StudentService:
     def list_students(self) -> list[StudentSchema]:
         return students
