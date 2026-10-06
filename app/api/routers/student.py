@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 
 from app.schemas.student import StudentCreateSchema, StudentSchema, StudentUpdateSchema
 from app.services.student import StudentService
@@ -12,8 +12,15 @@ def list_students(
 ) -> list[StudentSchema]:
     return student_service.list_students()
 
+@router.get("/{student_id}")
+def get_student(
+    student_id: str,
+    student_service: StudentService = Depends(StudentService),
+):
+    return student_service.get_student(student_id=student_id)
 
-@router.post("/")
+
+@router.post("/", status_code=status.HTTP_201_CREATED)
 def create_student(
     payload: StudentCreateSchema,
     student_service: StudentService = Depends(StudentService),
@@ -30,7 +37,7 @@ def update_student(
     return student_service.update_student(student_id=student_id, student_update=payload)
 
 
-@router.delete("/{student_id}")
+@router.delete("/{student_id}", status_code=status.HTTP_200_OK)
 def delete_student(
     student_id: str,
     student_service: StudentService = Depends(StudentService),
