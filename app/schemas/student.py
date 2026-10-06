@@ -26,8 +26,8 @@ class StudentCreateSchema(StudentBase):
 
 
 class StudentUpdateSchema(BaseModel):
-    name: str | None = Field(min_length=1, max_length=100)
-    age: int | None = Field(ge=6, le=18)
-    grade: int | None = Field(ge=1, le=11)
+    name: str | None = Field(default=None, min_length=1, max_length=100)
+    age: int | None = Field(default=None, ge=6, le=18)
+    grade: int | None = Field(default=None, ge=1, le=11)
     level: StudentLevelEnum | None = None
-    parent_contact: str | None = Field(max_length=100)
+    parent_contact: str | None = Field(default=None, max_length=100)
