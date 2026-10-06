@@ -1,6 +1,7 @@
 from itertools import count
 
 from fastapi import HTTPException, status
+from pydantic import ValidationError
 
 from app.schemas.student import StudentCreateSchema, StudentSchema, StudentUpdateSchema
 
@@ -14,7 +15,7 @@ class StudentService:
 
     def create_student(self, student_create: StudentCreateSchema) -> StudentSchema:
         new_student = StudentSchema(
-            id=str(next(_id_counter)),
+            id=next(_id_counter),
             name=student_create.name,
             age=student_create.age,
             grade=student_create.grade,
@@ -26,7 +27,7 @@ class StudentService:
 
         return new_student
 
-    def get_student(self, student_id: str) -> StudentSchema:
+    def get_student(self, student_id: int) -> StudentSchema:
         for student in students:
             if student.id == student_id:
                 return student
@@ -37,14 +38,20 @@ class StudentService:
         )
 
     def update_student(
-        self, student_id: str, student_update: StudentUpdateSchema
+        self, student_id: int, student_update: StudentUpdateSchema
     ) -> StudentSchema:
 
         for i, student in enumerate(students):
             if student.id == student_id:
-                updated_data = student_update.model_dump(exclude_unset=True)
-                updated_student = student.model_copy(update=updated_data)
-                StudentSchema.model_validate(updated_student.model_dump())
+                try:
+                    updated_data = student_update.model_dump(exclude_unset=True)
+                    updated_student = student.model_copy(update=updated_data)
+                    StudentSchema.model_validate(updated_student.model_dump())
+                except ValidationError as e:
+                    raise HTTPException(
+                        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                        detail=e.errors(),
+                    ) from e
 
                 students[i] = updated_student
 
@@ -55,7 +62,7 @@ class StudentService:
             detail=f"Студент {student_id} не найден",
         )
 
-    def delete_student(self, student_id: str) -> None:
+    def delete_student(self, student_id: int) -> None:
         for i, student in enumerate(students):
             if student.id == student_id:
                 students.pop(i)

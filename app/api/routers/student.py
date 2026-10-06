@@ -14,7 +14,7 @@ def list_students(
 
 @router.get("/{student_id}")
 def get_student(
-    student_id: str,
+    student_id: int,
     student_service: StudentService = Depends(StudentService),
 ):
     return student_service.get_student(student_id=student_id)
@@ -31,15 +31,15 @@ def create_student(
 @router.patch("/{student_id}")
 def update_student(
     payload: StudentUpdateSchema,
-    student_id: str,
+    student_id: int,
     student_service: StudentService = Depends(StudentService),
 ) -> StudentSchema:
     return student_service.update_student(student_id=student_id, student_update=payload)
 
 
-@router.delete("/{student_id}", status_code=status.HTTP_200_OK)
+@router.delete("/{student_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_student(
-    student_id: str,
+    student_id: int,
     student_service: StudentService = Depends(StudentService),
 ) -> None:
     return student_service.delete_student(student_id=student_id)

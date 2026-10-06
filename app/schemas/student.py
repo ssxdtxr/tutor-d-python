@@ -18,7 +18,7 @@ class StudentBase(BaseModel):
 
 
 class StudentSchema(StudentBase):
-    id: str
+    id: int
 
 
 class StudentCreateSchema(StudentBase):
