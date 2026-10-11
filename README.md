@@ -29,3 +29,7 @@ cp .env.example .env
 |------------|----------|--------------|
 | `APP_NAME` | Название приложения в Swagger UI | `Дневник репетитора API` |
 | `DEBUG` | Подробные трейсбеки в ответах | `false` |
+| `POSTGRES_USER` | Пользователь PostgreSQL | — |
+| `POSTGRES_PASSWORD` | Пароль PostgreSQL | — |
+| `POSTGRES_DB` | Имя базы данных | — |
+| `POSTGRES_HOST` | Хост PostgreSQL | `localhost` |
