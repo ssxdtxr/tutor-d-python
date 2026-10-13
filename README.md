@@ -9,6 +9,14 @@
 uv sync
 ```
 
+## База данных
+
+Подними PostgreSQL в Docker:
+
+```bash
+docker compose up -d db
+```
+
 ## Запуск
 
 ```bash

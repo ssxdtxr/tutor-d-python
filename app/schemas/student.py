@@ -1,6 +1,6 @@
 from enum import StrEnum
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class StudentLevelEnum(StrEnum):
@@ -9,6 +9,7 @@ class StudentLevelEnum(StrEnum):
     advanced = "advanced"
 
 
+# Общие поля и валидация — база для Create и Schema
 class StudentBase(BaseModel):
     name: str = Field(min_length=1, max_length=100)
     age: int = Field(ge=6, le=18)
@@ -17,14 +18,20 @@ class StudentBase(BaseModel):
     parent_contact: str | None = Field(default=None, max_length=100)
 
 
+# Ответ API — содержит id.
+# from_attributes=True — читает данные из ORM-объекта через атрибуты, не словарь
 class StudentSchema(StudentBase):
     id: int
+    model_config = ConfigDict(from_attributes=True)
 
 
+# Тело POST-запроса — id не нужен, его выдаёт база
 class StudentCreateSchema(StudentBase):
     pass
 
 
+# Тело PATCH-запроса — все поля опциональны (частичное обновление).
+# Валидатор запрещает явно передавать null для обязательных полей.
 class StudentUpdateSchema(BaseModel):
     name: str | None = Field(default=None, min_length=1, max_length=100)
     age: int | None = Field(default=None, ge=6, le=18)
