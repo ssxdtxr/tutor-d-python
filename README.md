@@ -9,6 +9,24 @@
 uv sync
 ```
 
+## Настройки
+
+Скопируй шаблон и при необходимости измени значения:
+
+```bash
+cp .env.example .env
+```
+
+| Переменная | Описание | По умолчанию |
+|------------|----------|--------------|
+| `APP_NAME` | Название приложения в Swagger UI | `Дневник репетитора API` |
+| `DEBUG` | Подробные трейсбеки в ответах | `false` |
+| `POSTGRES_USER` | Пользователь PostgreSQL | `tutor` |
+| `POSTGRES_PASSWORD` | Пароль PostgreSQL | `tutor` |
+| `POSTGRES_DB` | Имя базы данных | `tutor` |
+| `POSTGRES_HOST` | Хост PostgreSQL | `localhost` |
+| `POSTGRES_PORT` | Порт PostgreSQL | `5432` |
+
 ## База данных
 
 Подними PostgreSQL в Docker:
@@ -24,20 +42,3 @@ uv run uvicorn app.main:app --reload
 ```
 
 Swagger: http://127.0.0.1:8000/docs
-
-## Настройки
-
-Скопируй шаблон и при необходимости измени значения:
-
-```bash
-cp .env.example .env
-```
-
-| Переменная | Описание | По умолчанию |
-|------------|----------|--------------|
-| `APP_NAME` | Название приложения в Swagger UI | `Дневник репетитора API` |
-| `DEBUG` | Подробные трейсбеки в ответах | `false` |
-| `POSTGRES_USER` | Пользователь PostgreSQL | — |
-| `POSTGRES_PASSWORD` | Пароль PostgreSQL | — |
-| `POSTGRES_DB` | Имя базы данных | — |
-| `POSTGRES_HOST` | Хост PostgreSQL | `localhost` |

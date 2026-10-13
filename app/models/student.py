@@ -21,6 +21,6 @@ class Student(Base):
     parent_contact: Mapped[str | None] = mapped_column(String(100))  # None → NULL в БД
 
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),    # TIMESTAMPTZ — хранит часовой пояс
-        server_default=func.now()   # время проставляет база, не приложение
+        DateTime(timezone=True),  # TIMESTAMPTZ — хранит часовой пояс
+        server_default=func.now(),  # время проставляет база, не приложение
     )

@@ -12,17 +12,21 @@ class Settings(BaseSettings):
     app_name: str = "Дневник репетитора API"
     debug: bool = False
 
-    postgres_user: str
-    postgres_password: str
-    postgres_db: str
+    postgres_user: str = "tutor"
+    postgres_password: str = "tutor"  # noqa: S105
+    postgres_db: str = "tutor"
     postgres_host: str = "localhost"
+    postgres_port: int = 5432
 
     @computed_field
     @property
     def database_url(self) -> str:
-        return f"postgresql+asyncpg://{self.postgres_user}:{self.postgres_password}@{self.postgres_host}:5432/{self.postgres_db}"
+        return (
+            f"postgresql+asyncpg://{self.postgres_user}:{self.postgres_password}"
+            f"@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
+        )
 
 
 @lru_cache
 def get_settings() -> Settings:
-    return Settings()  # type: ignore[call-arg]
+    return Settings()

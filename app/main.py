@@ -10,6 +10,7 @@ from app.models.base import Base
 
 settings = get_settings()
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # создаём таблицы при старте если их нет; временно — в TJ-5 заменит Alembic
