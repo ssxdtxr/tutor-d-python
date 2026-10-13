@@ -1,0 +1,24 @@
+{
+  "recommendations": [
+    // Python core
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "ms-python.debugpy",
+    "charliermarsh.ruff",
+    "ms-python.mypy-type-checker",
+    "njpwerner.autodocstring",
+    "kevinrose.vsc-python-indent",
+    // DB
+    "cweijan.vscode-postgresql-client2",
+    // DevX
+    "usernamehw.errorlens",
+    "eamodio.gitlens",
+    "humao.rest-client",
+    // Docker / Infra
+    "ms-azuretools.vscode-docker",
+    // Config files
+    "tamasfe.even-better-toml",
+    "redhat.vscode-yaml",
+    "mechatroner.rainbow-csv"
+  ]
+}
