@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_session
+from app.models.lesson import Lesson
 from app.models.student import Student
 from app.schemas.student import StudentCreateSchema, StudentSchema, StudentUpdateSchema
 
@@ -83,5 +84,15 @@ class StudentService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Студент {student_id} не найден",
             )
+        # нельзя удалить студента у которого есть уроки — в них деньги
+        result = await self.session.execute(
+            select(Lesson).where(Lesson.student_id == student_id).limit(1)
+        )
+        if result.scalars().first() is not None:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"У студента {student_id} есть уроки",
+            )
+
         await self.session.delete(student)
         await self.session.commit()

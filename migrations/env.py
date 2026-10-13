@@ -7,7 +7,10 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from app.core.config import get_settings
-from app.models import student  # noqa: F401 — регистрирует модели в Base.metadata
+from app.models import (
+    lesson,  # noqa: F401 — регистрирует модели в Base.metadata
+    student,  # noqa: F401 — регистрирует модели в Base.metadata
+)
 from app.models.base import Base
 
 # this is the Alembic Config object, which provides
