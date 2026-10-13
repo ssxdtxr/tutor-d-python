@@ -35,6 +35,12 @@ cp .env.example .env
 docker compose up -d db
 ```
 
+Примени миграции:
+
+```bash
+uv run alembic upgrade head
+```
+
 ## Запуск
 
 ```bash
@@ -42,3 +48,13 @@ uv run uvicorn app.main:app --reload
 ```
 
 Swagger: http://127.0.0.1:8000/docs
+
+## Миграции
+
+| Команда | Описание |
+|---------|----------|
+| `uv run alembic revision --autogenerate -m "..."` | Создать миграцию по изменениям в моделях |
+| `uv run alembic upgrade head` | Применить все миграции |
+| `uv run alembic downgrade -1` | Откатить последнюю миграцию |
+| `uv run alembic downgrade base` | Откатить все миграции |
+| `uv run alembic check` | Проверить что модели совпадают с БД |

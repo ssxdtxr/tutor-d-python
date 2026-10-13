@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, Enum, String, func
+from sqlalchemy import DateTime, Enum, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.base import Base
@@ -24,3 +24,5 @@ class Student(Base):
         DateTime(timezone=True),  # TIMESTAMPTZ — хранит часовой пояс
         server_default=func.now(),  # время проставляет база, не приложение
     )
+    # Text — без ограничения длины, NULL разрешён
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
