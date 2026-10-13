@@ -6,15 +6,17 @@ from app.services.student import StudentService
 router = APIRouter(prefix="/students", tags=["students"])
 
 
+# "" вместо "/" — без редиректа 307 при запросе без слэша
 @router.get(
-    "/",
+    "",
     summary="Список всех учеников",
     responses={200: {"description": "Успешно"}},
 )
-def list_students(
+async def list_students(
+    # Depends(StudentService) — FastAPI создаёт сервис с сессией из get_session
     student_service: StudentService = Depends(StudentService),
 ) -> list[StudentSchema]:
-    return student_service.list_students()
+    return await student_service.list_students()
 
 
 @router.get(
@@ -25,15 +27,15 @@ def list_students(
         404: {"description": "Ученик не найден"},
     },
 )
-def get_student(
+async def get_student(
     student_id: int,
     student_service: StudentService = Depends(StudentService),
 ) -> StudentSchema:
-    return student_service.get_student(student_id=student_id)
+    return await student_service.get_student(student_id=student_id)
 
 
 @router.post(
-    "/",
+    "",
     status_code=status.HTTP_201_CREATED,
     summary="Создать ученика",
     responses={
@@ -41,11 +43,11 @@ def get_student(
         422: {"description": "Ошибка валидации"},
     },
 )
-def create_student(
+async def create_student(
     payload: StudentCreateSchema,
     student_service: StudentService = Depends(StudentService),
 ) -> StudentSchema:
-    return student_service.create_student(student_create=payload)
+    return await student_service.create_student(student_create=payload)
 
 
 @router.patch(
@@ -57,12 +59,14 @@ def create_student(
         422: {"description": "Ошибка валидации"},
     },
 )
-def update_student(
+async def update_student(
     payload: StudentUpdateSchema,
     student_id: int,
     student_service: StudentService = Depends(StudentService),
 ) -> StudentSchema:
-    return student_service.update_student(student_id=student_id, student_update=payload)
+    return await student_service.update_student(
+        student_id=student_id, student_update=payload
+    )
 
 
 @router.delete(
@@ -74,8 +78,8 @@ def update_student(
         404: {"description": "Ученик не найден"},
     },
 )
-def delete_student(
+async def delete_student(
     student_id: int,
     student_service: StudentService = Depends(StudentService),
 ) -> None:
-    return student_service.delete_student(student_id=student_id)
+    return await student_service.delete_student(student_id=student_id)
