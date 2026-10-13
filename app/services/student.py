@@ -1,52 +1,43 @@
 from fastapi import Depends, HTTPException, status
 from pydantic import ValidationError
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.database import get_session
-from app.models.student import Student
-from app.schemas.student import StudentCreateSchema, StudentSchema, StudentUpdateSchema
+from app.repository.student import StudentRepository
+from app.schemas.student import (  # noqa: F401
+    StudentCreateSchema,
+    StudentSchema,
+    StudentUpdateSchema,
+)
 
 
 class StudentService:
-    # сессия создаётся FastAPI через Depends и живёт один HTTP-запрос
-    def __init__(self, session: AsyncSession = Depends(get_session)) -> None:
-        self.session = session
+    def __init__(
+        self, repo: StudentRepository = Depends(StudentRepository)
+    ) -> None:
+        self.repo = repo
 
     async def list_students(self) -> list[StudentSchema]:
-        # select(Student) → SELECT * FROM students
-        result = await self.session.execute(select(Student))
-        # scalars() убирает обёртку Row, all() возвращает список ORM-объектов
-        students = result.scalars().all()
+        students = await self.repo.list()
         return [StudentSchema.model_validate(s) for s in students]
 
     async def create_student(
         self, student_create: StudentCreateSchema
     ) -> StudentSchema:
-        # **model_dump() разворачивает схему в kwargs для ORM-модели
-        student = Student(**student_create.model_dump())
-        self.session.add(student)
-        await self.session.commit()
-        # refresh подтягивает id и created_at, которые проставила база
-        await self.session.refresh(student)
+        student = await self.repo.create(student_create)
         return StudentSchema.model_validate(student)
 
     async def get_student(self, student_id: int) -> StudentSchema:
-        # session.get — поиск по первичному ключу, быстрее чем select + where
-        student = await self.session.get(Student, student_id)
-
+        student = await self.repo.get_by_id(student_id)
         if student is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Студент {student_id} не найден",
             )
-
         return StudentSchema.model_validate(student)
 
     async def update_student(
         self, student_id: int, student_update: StudentUpdateSchema
     ) -> StudentSchema:
-        student = await self.session.get(Student, student_id)
+        student = await self.repo.get_by_id(student_id)
         if student is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -68,20 +59,22 @@ class StudentService:
                 detail=e.errors(),
             ) from e
 
-        # применяем изменения к ORM-объекту
-        for field, value in updated_data.items():
-            setattr(student, field, value)
-
-        await self.session.commit()
-        await self.session.refresh(student)
+        student = await self.repo.update(student, updated_data)
         return StudentSchema.model_validate(student)
 
     async def delete_student(self, student_id: int) -> None:
-        student = await self.session.get(Student, student_id)
+        student = await self.repo.get_by_id(student_id)
         if student is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Студент {student_id} не найден",
             )
-        await self.session.delete(student)
-        await self.session.commit()
+
+        # нельзя удалить студента у которого есть уроки — в них деньги
+        if await self.repo.has_lessons(student_id):
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"У студента {student_id} есть уроки",
+            )
+
+        await self.repo.delete(student)
